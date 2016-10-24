@@ -1,6 +1,7 @@
 package com.example.chari.testscaninfo;
 
 import android.content.Context;
+import android.graphics.Color;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
@@ -48,6 +49,8 @@ public class CoustomAdapter extends BaseAdapter
         view= inflater.inflate(R.layout.row,null);
         TextView item1=(TextView)view.findViewById(R.id.textItem);
         TextView item2=(TextView)view.findViewById(R.id.textItem2);
+        item1.setTextColor(Color.BLUE);
+        item2.setTextColor(Color.BLUE);
         item1.setText(testItems[i]);
         item2.setText(testItems1[i]);
 

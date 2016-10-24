@@ -1,12 +1,16 @@
 package com.example.chari.testscaninfo;
 
+import android.Manifest;
 import android.app.ProgressDialog;
 import android.content.Context;
 import android.content.Intent;
+import android.content.pm.PackageManager;
 import android.net.ConnectivityManager;
 import android.net.NetworkInfo;
 import android.os.AsyncTask;
 import android.os.Bundle;
+import android.support.v4.app.ActivityCompat;
+import android.support.v4.content.ContextCompat;
 import android.support.v7.app.AppCompatActivity;
 import android.telephony.TelephonyManager;
 import android.util.Log;
@@ -31,6 +35,7 @@ public class MainActivity extends AppCompatActivity
     private String agencyName;
     PostDetails postDetails;
     public static final String URL_AGENCYNAME = "http://friskcon.com/AgencyRestService/AgencyRestService.svc/GetAgencyName/?";
+    private static final int REQUEST_READ_PHONE_STATE = 0;
 
     @Override
     protected void onCreate(Bundle savedInstanceState)
@@ -38,7 +43,24 @@ public class MainActivity extends AppCompatActivity
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_main);
         getRef();
-        TextIMEI.setText("1234567890");
+
+        //permission for higher versionre
+
+        int permissionCheck = ContextCompat.checkSelfPermission(this, Manifest.permission.READ_PHONE_STATE);
+
+        if (permissionCheck != PackageManager.PERMISSION_GRANTED)
+        {
+            ActivityCompat.requestPermissions(this, new String[]{Manifest.permission.READ_PHONE_STATE}, REQUEST_READ_PHONE_STATE);
+        } else
+        {
+            IMEI();
+        }
+
+
+
+
+        //TextIMEI.setText("1234567890");
+        TextIMEI.setText(IMEI());
         postDetails= new PostDetails();
 
     }
@@ -61,6 +83,7 @@ public class MainActivity extends AppCompatActivity
         EditPassword=(EditText)findViewById(R.id.EditPassword);
         TextIMEI=(TextView) findViewById(R.id.TextIMEI);
         BtnSubmit=(Button) findViewById(R.id.BtnSubmit);
+        textView=(TextView)findViewById(R.id.textView1);
 
     }
 
@@ -88,6 +111,22 @@ public class MainActivity extends AppCompatActivity
         ImEINo = tm.getDeviceId();
 
         return ImEINo;
+    }
+
+    @Override
+    public void onRequestPermissionsResult(int requestCode, String permissions[], int[] grantResults)
+    {
+        switch (requestCode) {
+            case REQUEST_READ_PHONE_STATE:
+                if ((grantResults.length > 0) && (grantResults[0] == PackageManager.PERMISSION_GRANTED)) {
+                    //TODO
+                    IMEI();
+                }
+                break;
+
+            default:
+                break;
+        }
     }
 
 
@@ -135,6 +174,9 @@ public class MainActivity extends AppCompatActivity
         protected void onPostExecute(String result) {
             super.onPostExecute(String.valueOf(result));
 
+            textView.setText(result);
+
+
             pDialog.dismiss();
 
             if (!((result==null)&&(result.equals(""))))
@@ -144,6 +186,7 @@ public class MainActivity extends AppCompatActivity
                     Toast.makeText(getApplicationContext(),"Please Enter Valid Agency",Toast.LENGTH_LONG).show();
                 }else
                 {
+                    Toast.makeText(getApplicationContext(),"Responce is"+result,Toast.LENGTH_LONG).show();
                     Intent intent = new Intent(MainActivity.this,ListViewShow.class);
                     startActivity(intent);
                     finish();

@@ -8,12 +8,14 @@
         android:layout_width="match_parent"
         android:layout_height="20dp"
         android:id="@+id/textItem"
+        android:textColor="@color/colorPrimary"
         />
 
     <TextView
         android:layout_width="match_parent"
         android:layout_height="20dp"
         android:id="@+id/textItem2"
+        android:textColor="@color/colorPrimary"
         />
 
 </LinearLayout>
